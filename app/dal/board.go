@@ -1,11 +1,13 @@
 package dal
 
 import (
-	"log"
-	"testAPI/config"
-
 	"gorm.io/gorm"
 )
+
+type ModelInterface interface {
+	TableName()
+	GetTable() any
+}
 
 type Board struct {
 	gorm.Model        // GORM의 기본 모델 (ID, CreatedAt, UpdatedAt, DeletedAt을 포함)
@@ -15,26 +17,10 @@ type Board struct {
 	UserName   string `gorm:"size:10;not null"`
 }
 
-type BoardORMInterface interface {
-	AddBoard(board *Board) error
-	GetBoard() (data []Board, err error)
+func (m Board) TableName() {
+	println("dddd")
 }
 
-type BoardORM struct {
-	DB *gorm.DB
-}
-
-func NewBoardORM() (BoardORMInterface, error) {
-	log.Println("dal dal")
-	return &BoardORM{
-		DB: config.DB,
-	}, nil
-}
-
-func (o *BoardORM) AddBoard(board *Board) error {
-	return o.DB.Create(&board).Error
-}
-
-func (o *BoardORM) GetBoard() (data []Board, err error) {
-	return data, o.DB.Order("ID desc").Find(&data).Error
+func (m Board) GetTable() any {
+	return &Board{}
 }
