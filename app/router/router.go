@@ -11,7 +11,7 @@ type RouterInterface interface {
 }
 
 type Router struct {
-	boardHandler handlers.BoardHandlerInterface
+	boardHandler handlers.HandlerInterface
 }
 
 func NewRouter() (RouterInterface, error) {
@@ -27,9 +27,9 @@ func NewRouter() (RouterInterface, error) {
 
 func (r *Router) BoardRouter(api fiber.Router) {
 
-	api.Get("/", r.boardHandler.Board)
-
-	api.Get("/:id", r.boardHandler.BoardById)
-
-	api.Post("/", r.boardHandler.AddBoard)
+	api.Get("/", r.boardHandler.ReadAll)
+	api.Get("/:id", r.boardHandler.ReadById)
+	api.Post("/", r.boardHandler.Create)
+	api.Put("/:id", r.boardHandler.Update)
+	api.Delete("/:id", r.boardHandler.Delete)
 }

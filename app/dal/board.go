@@ -25,7 +25,6 @@ type BoardORM struct {
 }
 
 func NewBoardORM() (BoardORMInterface, error) {
-
 	log.Println("dal dal")
 	return &BoardORM{
 		DB: config.DB,

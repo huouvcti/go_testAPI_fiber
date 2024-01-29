@@ -8,12 +8,15 @@ import (
 )
 
 type BoardHandlerInterface interface {
-	Board(c *fiber.Ctx) error
-	BoardById(c *fiber.Ctx) error
-	AddBoard(c *fiber.Ctx) error
+	HandlerInterface
+
+	// Board(c *fiber.Ctx) error
+	// BoardById(c *fiber.Ctx) error
+	// AddBoard(c *fiber.Ctx) error
 }
 
 type BoardHandler struct {
+	Handler
 	ORM dal.BoardORMInterface
 }
 
@@ -28,7 +31,7 @@ func NewBoardHandler() (BoardHandlerInterface, error) {
 	}, nil
 }
 
-func (h *BoardHandler) Board(c *fiber.Ctx) error {
+func (h *BoardHandler) ReadAll(c *fiber.Ctx) error {
 	data, err := h.ORM.GetBoard()
 
 	if err != nil {
@@ -42,13 +45,13 @@ func (h *BoardHandler) Board(c *fiber.Ctx) error {
 	})
 }
 
-func (h *BoardHandler) BoardById(c *fiber.Ctx) error {
+func (h *BoardHandler) ReadById(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"msg": "ddddd",
 	})
 }
 
-func (h *BoardHandler) AddBoard(c *fiber.Ctx) error {
+func (h *BoardHandler) Create(c *fiber.Ctx) error {
 	req := &dal.Board{}
 
 	if err := c.BodyParser(req); err != nil {
@@ -67,5 +70,18 @@ func (h *BoardHandler) AddBoard(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"msg": req,
+	})
+}
+
+func (h *BoardHandler) Update(c *fiber.Ctx) error {
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"msg": "ddd",
+	})
+}
+
+func (h *BoardHandler) Delete(c *fiber.Ctx) error {
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"msg": "ddd",
 	})
 }
