@@ -19,6 +19,8 @@ type ORMInterface interface {
 	ReadAll(model ModelInterface) (any, error)
 
 	Update(data any) error
+
+	Delete(model ModelInterface, id uint) error
 }
 
 type ORM struct {
@@ -45,4 +47,8 @@ func (o *ORM) ReadAll(model ModelInterface) (any, error) {
 
 func (o *ORM) Update(data any) error {
 	return o.DB.Save(data).Error
+}
+
+func (o *ORM) Delete(model ModelInterface, id uint) error {
+	return o.DB.Delete(model, id).Error
 }

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"log"
+	"strconv"
 	"testAPI/app/dal"
 
 	"github.com/gofiber/fiber/v2"
@@ -104,7 +105,25 @@ func (h *Handler) UpdateById(c *fiber.Ctx) error {
 }
 
 func (h *Handler) DeleteById(c *fiber.Ctx) error {
+
+	reqId := c.Params("id")
+
+	uint64_id, err := strconv.ParseUint(reqId, 10, 0)
+	if err != nil {
+		log.Println(err.Error())
+		return err
+	}
+
+	id := uint(uint64_id)
+
+	if err := h.ORM.Delete(h.Model, id); err != nil {
+		log.Println(err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"msg": err.Error(),
+		})
+	}
+
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"msg": "ddd",
+		"msg": "OK",
 	})
 }
