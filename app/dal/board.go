@@ -4,11 +4,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type ModelInterface interface {
-	TableName()
-	GetTable() any
-}
-
 type Board struct {
 	gorm.Model        // GORM의 기본 모델 (ID, CreatedAt, UpdatedAt, DeletedAt을 포함)
 	Title      string `gorm:"size:20;not null"`
@@ -17,10 +12,14 @@ type Board struct {
 	UserName   string `gorm:"size:10;not null"`
 }
 
-func (m Board) TableName() {
-	println("dddd")
+func (m *Board) TableName() string {
+	return "boards"
 }
 
-func (m Board) GetTable() any {
-	return &Board{}
+func (m *Board) GetModels() any {
+	return []Board{}
 }
+
+// func (m *Board) GetModel() ModelInterface {
+// 	return Board{}
+// }

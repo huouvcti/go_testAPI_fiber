@@ -1,6 +1,7 @@
 package app
 
 import (
+	"testAPI/app/dal"
 	"testAPI/app/router"
 	"testAPI/config"
 
@@ -25,7 +26,7 @@ func RunAPI() error {
 	return RunAPIWithRouter(r)
 }
 
-func RunAPIWithRouter(r router.RouterInterface) error {
+func RunAPIWithRouter(r *router.Router) error {
 
 	app := fiber.New()
 
@@ -51,12 +52,12 @@ func RunAPIWithRouter(r router.RouterInterface) error {
 
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
-	v1.Route("/board", r.BoardRouter)
 
-	/* 위 코드와 동일하게 동작 */
-	// app.Route("/api/v1", func(api fiber.Router) {
-	// 	api.Route("/user", r.UserRouter)
-	// })
+	boardGroup := v1.Group("/board")
+	r.RunRouter(boardGroup, &dal.Board{})
+
+	listGroup := v1.Group("/list")
+	r.RunRouter(listGroup, &dal.List{})
 
 	return app.Listen(":1234")
 }

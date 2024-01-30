@@ -23,18 +23,16 @@ type Handler struct {
 	ORM    dal.ORMInterface
 }
 
-func NewHandler() (HandlerInterface, error) {
+func NewHandler(model dal.ModelInterface) (HandlerInterface, error) {
 	orm, err := dal.NewORM()
 	if err != nil {
 		return nil, err
 	}
 
-	model := dal.Board{}
-
 	return &Handler{
 		ORM:    orm,
-		Model:  &model,
-		Models: []dal.ModelInterface{&model},
+		Model:  model,
+		Models: []dal.ModelInterface{model},
 	}, nil
 }
 
@@ -65,10 +63,10 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 }
 
 func (h *Handler) ReadAll(c *fiber.Ctx) error {
-	data, err := h.ORM.ReadAll(h.Models)
+	data, err := h.ORM.ReadAll(h.Model)
 
 	if err != nil {
-		log.Print(err)
+		log.Print("[handler] ReadAll: ", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"msg": err,
 		})

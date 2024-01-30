@@ -7,9 +7,14 @@ import (
 	"gorm.io/gorm"
 )
 
+type ModelInterface interface {
+	TableName() string
+	GetModels() any
+}
+
 type ORMInterface interface {
 	Create(board ModelInterface) error
-	ReadAll(model []ModelInterface) ([]ModelInterface, error)
+	ReadAll(model ModelInterface) (any, error)
 }
 
 type ORM struct {
@@ -17,7 +22,7 @@ type ORM struct {
 }
 
 func NewORM() (ORMInterface, error) {
-	log.Println("dal dal")
+	log.Println("New ORM")
 	return &ORM{
 		DB: config.DB,
 	}, nil
@@ -27,7 +32,9 @@ func (o *ORM) Create(board ModelInterface) error {
 	return o.DB.Create(&board).Error
 }
 
-func (o *ORM) ReadAll(model []ModelInterface) ([]ModelInterface, error) {
-	log.Printf("%T\n", model)
-	return model, o.DB.Order("ID desc").Find(&model).Error
+func (o *ORM) ReadAll(model ModelInterface) (any, error) {
+	results := model.GetModels()
+
+	// o.DB.Table(model.TableName()).Order("ID desc").Find(&results).Error 또는
+	return results, o.DB.Order("ID desc").Find(&results).Error
 }

@@ -1,34 +1,31 @@
 package router
 
 import (
+	"log"
+	"testAPI/app/dal"
 	"testAPI/app/handlers"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-type RouterInterface interface {
-	BoardRouter(fiber.Router)
-}
-
 type Router struct {
-	boardHandler handlers.HandlerInterface
 }
 
-func NewRouter() (RouterInterface, error) {
-	br, err := handlers.NewHandler()
+func NewRouter() (*Router, error) {
+	return &Router{}, nil
+}
+
+func (r *Router) RunRouter(group fiber.Router, model dal.ModelInterface) {
+	h, err := handlers.NewHandler(model)
+
 	if err != nil {
-		return nil, err
+		log.Println(err)
 	}
 
-	return &Router{
-		boardHandler: br,
-	}, nil
-}
+	group.Get("/", h.ReadAll)
+	group.Get("/:id", h.ReadById)
 
-func (r *Router) BoardRouter(api fiber.Router) {
-
-	api.Get("/", r.boardHandler.ReadAll)
-	api.Get("/:id", r.boardHandler.ReadById)
-
-	api.Post("/", r.boardHandler.Create)
+	group.Post("/", h.Create)
+	group.Put("/", h.Update)
+	group.Delete("/", h.Delete)
 }
