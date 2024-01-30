@@ -17,3 +17,11 @@ func (m *List) TableName() string {
 func (m *List) GetModels() any {
 	return []List{}
 }
+
+func (m *List) GetModel() ModelInterface {
+	return &List{}
+}
+
+func (m *List) SetID(id string) {
+
+}

@@ -18,6 +18,8 @@ type API struct {
 func RunAPI() error {
 	config.OpenDB()
 
+	config.DB.AutoMigrate(&dal.Board{})
+
 	r, err := router.NewRouter()
 	if err != nil {
 		return err

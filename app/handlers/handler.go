@@ -13,8 +13,8 @@ type HandlerInterface interface {
 	ReadAll(c *fiber.Ctx) error
 	ReadById(c *fiber.Ctx) error
 
-	Update(c *fiber.Ctx) error
-	Delete(c *fiber.Ctx) error
+	UpdateById(c *fiber.Ctx) error
+	DeleteById(c *fiber.Ctx) error
 }
 
 type Handler struct {
@@ -37,28 +37,24 @@ func NewHandler(model dal.ModelInterface) (HandlerInterface, error) {
 }
 
 func (h *Handler) Create(c *fiber.Ctx) error {
-	// req := &dal.Board{}
+	req := h.Model.GetModel()
 
-	// if err := c.BodyParser(req); err != nil {
-	// 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-	// 		"msg": err,
-	// 	})
-	// }
+	if err := c.BodyParser(&req); err != nil {
+		log.Println(err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"msg": err.Error(),
+		})
+	}
 
-	// if err := h.ORM.Create(req); err != nil {
-	// 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-	// 		"msg": err,
-	// 	})
-	// }
-
-	// fmt.Printf("%v\n", req)
-
-	// return c.Status(fiber.StatusOK).JSON(fiber.Map{
-	// 	"msg": req,
-	// })
+	if err := h.ORM.Create(req); err != nil {
+		log.Println(err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"msg": err.Error(),
+		})
+	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"msg": "ddd",
+		"msg": "OK",
 	})
 }
 
@@ -83,14 +79,31 @@ func (h *Handler) ReadById(c *fiber.Ctx) error {
 	})
 }
 
-func (h *Handler) Update(c *fiber.Ctx) error {
+func (h *Handler) UpdateById(c *fiber.Ctx) error {
+	req := h.Model.GetModel()
+
+	if err := c.BodyParser(&req); err != nil {
+		log.Println(err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"msg": err.Error(),
+		})
+	}
+
+	req.SetID(c.Params("id"))
+
+	if err := h.ORM.Update(req); err != nil {
+		log.Println(err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"msg": err.Error(),
+		})
+	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"msg": "ddd",
+		"msg": "OK",
 	})
 }
 
-func (h *Handler) Delete(c *fiber.Ctx) error {
+func (h *Handler) DeleteById(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"msg": "ddd",
 	})

@@ -10,11 +10,15 @@ import (
 type ModelInterface interface {
 	TableName() string
 	GetModels() any
+	GetModel() ModelInterface
+	SetID(id string)
 }
 
 type ORMInterface interface {
-	Create(board ModelInterface) error
+	Create(data any) error
 	ReadAll(model ModelInterface) (any, error)
+
+	Update(data any) error
 }
 
 type ORM struct {
@@ -28,8 +32,8 @@ func NewORM() (ORMInterface, error) {
 	}, nil
 }
 
-func (o *ORM) Create(board ModelInterface) error {
-	return o.DB.Create(&board).Error
+func (o *ORM) Create(data any) error {
+	return o.DB.Create(data).Error
 }
 
 func (o *ORM) ReadAll(model ModelInterface) (any, error) {
@@ -37,4 +41,8 @@ func (o *ORM) ReadAll(model ModelInterface) (any, error) {
 
 	// o.DB.Table(model.TableName()).Order("ID desc").Find(&results).Error 또는
 	return results, o.DB.Order("ID desc").Find(&results).Error
+}
+
+func (o *ORM) Update(data any) error {
+	return o.DB.Save(data).Error
 }

@@ -26,6 +26,6 @@ func (r *Router) RunRouter(group fiber.Router, model dal.ModelInterface) {
 	group.Get("/:id", h.ReadById)
 
 	group.Post("/", h.Create)
-	group.Put("/", h.Update)
-	group.Delete("/", h.Delete)
+	group.Put("/:id", h.UpdateById)
+	group.Delete("/:id", h.DeleteById)
 }
