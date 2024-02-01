@@ -22,10 +22,10 @@ func (r *Router) RunRouter(group fiber.Router, model dal.ModelInterface) {
 		log.Println(err)
 	}
 
-	group.Get("/", h.ReadAll)
-	group.Get("/:id", h.ReadById)
+	group.Get("/", h.ReadAll).Name("ReadAll")
+	group.Get("/:id", h.ReadById).Name("ReadById")
 
-	group.Post("/", h.Create)
-	group.Put("/:id", h.UpdateById)
-	group.Delete("/:id", h.DeleteById)
+	group.Post("/", h.Create).Name("Create")
+	group.Put("/:id", h.UpdateById).Name("UpdateById")
+	group.Delete("/:id", h.DeleteById).Name("DeleteById")
 }

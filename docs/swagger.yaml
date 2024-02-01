@@ -1,0 +1,13 @@
+info:
+  contact: {}
+paths:
+  /users/{id}:
+    get:
+      responses:
+        "200":
+          description: OK
+      summary: Get a user by ID
+      tags:
+      - Users
+      - Boards
+swagger: "2.0"
