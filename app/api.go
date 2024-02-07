@@ -64,17 +64,21 @@ func RunAPIWithRouter(r *router.Router) error {
 
 	boardGroup := v1.Group("/board")
 	boardGroup.Name("board.")
-	r.RunRouter(boardGroup, &dal.Board{})
+	r.RunRouter("board", boardGroup, &dal.Board{})
 
 	listGroup := v1.Group("/list")
 	listGroup.Name("list.")
-	r.RunRouter(listGroup, &dal.List{})
+	r.RunRouter("list", listGroup, &dal.List{})
 
 	// aaaGroup := v1.Group("/aaa")
 	// aaaGroup.Name("aaa.")
 	// r.RunRouter(aaaGroup, &dal.List{})
 
-	docs.GenSwaggerSpec(app, docs.Info{
+	dalArr := []dal.ModelInterface{}
+	dalArr = append(dalArr, &dal.Board{})
+	dalArr = append(dalArr, &dal.List{})
+
+	docs.GenSwaggerSpec(app, dalArr, docs.Info{
 		Title:       "TEST API",
 		Version:     "1.0",
 		Description: "Go Fiber REST API server TEST !",

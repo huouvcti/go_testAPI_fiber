@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"testAPI/app/dal"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,9 +14,10 @@ import (
  * swagger 문서 형식 struct
  */
 type SwaggerSpec struct {
-	OpenAPI string            `json:"openapi"`
-	Info    Info              `json:"info"`
-	Paths   map[string]Method `json:"paths"`
+	OpenAPI    string            `json:"openapi"`
+	Info       Info              `json:"info"`
+	Paths      map[string]Method `json:"paths"`
+	Components Components        `json:"components"`
 }
 
 type Info struct {
@@ -54,6 +56,10 @@ type Response struct {
 	Description string `json:"description"`
 }
 
+type Components struct {
+	Schemas map[string]Schema `json:"schemas"`
+}
+
 /*
  * 데이터 정리 struct
  */
@@ -79,7 +85,9 @@ func PathConvert(str string) string {
 	return joined
 }
 
-func GenSwaggerSpec(app *fiber.App, cfg ...Info) {
+func GenSwaggerSpec(app *fiber.App, models []dal.ModelInterface, cfg ...Info) {
+	fmt.Printf("%v\n", models[0].GetModel())
+
 	info := Info{
 		Title:       "undefined",
 		Version:     "undefined",
